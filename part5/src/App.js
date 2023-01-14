@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { initializeBlogs, setBlogs } from './reducers/blogReducer'
 import './styles/index.css'
 import Notification from './components/Notification'
 import Blog from './components/Blog'
@@ -11,7 +12,6 @@ import Togglable from './components/Togglable'
 import { showNotification } from './reducers/notificationReducer'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -26,18 +26,26 @@ const App = () => {
     }
   }, [])
 
+  // useEffect(() => {
+  //   blogService.getAll().then((blogs) => {
+  //     const sortedBlogs = blogs.sort((currentBlog, nextBlog) =>
+  //       currentBlog.likes > nextBlog.likes
+  //         ? -1
+  //         : currentBlog.likes === nextBlog
+  //           ? 0
+  //           : 1
+  //     )
+  //     setBlogs(sortedBlogs)
+  //   })
+  // }, [])
+  //
+  // OLD CODE
+
   useEffect(() => {
-    blogService.getAll().then((blogs) => {
-      const sortedBlogs = blogs.sort((currentBlog, nextBlog) =>
-        currentBlog.likes > nextBlog.likes
-          ? -1
-          : currentBlog.likes === nextBlog
-            ? 0
-            : 1
-      )
-      setBlogs(sortedBlogs)
-    })
+    dispatch(initializeBlogs())
   }, [])
+
+  const blogs = useSelector(({ blogs }) => blogs)
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -100,7 +108,7 @@ const App = () => {
   const handleBlogSubmit = async (newBlog) => {
     try {
       const addedBlog = await blogService.create(newBlog)
-      setBlogs([...blogs, addedBlog])
+      dispatch(setBlogs([...blogs, addedBlog]))
       dispatch(showNotification({
         message: `a new blog ${addedBlog.title} by ${addedBlog.author}`,
         error: false
@@ -110,32 +118,6 @@ const App = () => {
     } catch (exceptions) {
       console.log(exceptions)
       dispatch(showNotification({ message: 'Incorrect title, author, or url', error: true }))
-    }
-  }
-
-  const handleBlogUpdate = async (newBlog) => {
-    try {
-      const updatedBlog = await blogService.update(newBlog)
-      const updatedBlogs = blogs.map((blog) =>
-        blog.id === updatedBlog.id ? updatedBlog : blog
-      )
-      setBlogs(updatedBlogs)
-    } catch (exceptions) {
-      console.log(exceptions)
-      dispatch(showNotification({ message: 'An error has occured in the errors', error: true }))
-    }
-  }
-
-  const handleBlogDelete = async (blog) => {
-    try {
-      if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
-        const deletedBlog = await blogService.deleteReq(blog.id)
-        const updatedBlogs = blogs.filter((blog) => blog.id !== deletedBlog.id)
-        setBlogs(updatedBlogs)
-      }
-    } catch (exceptions) {
-      console.log(exceptions)
-      dispatch(showNotification({ message: 'An error has occured in the errors', error: true }))
     }
   }
 
@@ -155,8 +137,6 @@ const App = () => {
           <Blog
             key={blog.id}
             blog={blog}
-            updateBlog={handleBlogUpdate}
-            deleteBlog={handleBlogDelete}
             showDelete={blog.user.username === user.username}
           />
         ))}

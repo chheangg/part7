@@ -1,7 +1,11 @@
 import { useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { showNotification } from '../reducers/notificationReducer'
+import { updateBlogs, deleteBlog } from '../reducers/blogReducer'
 import PropTypes from 'prop-types'
 
-const Blog = ({ blog, updateBlog, deleteBlog, showDelete }) => {
+const Blog = ({ blog, showDelete }) => {
+  const dispatch = useDispatch()
   const [showDetail, setShowDetail] = useState(false)
 
   const blogStyle = {
@@ -13,6 +17,26 @@ const Blog = ({ blog, updateBlog, deleteBlog, showDelete }) => {
   }
 
   const showWhenVisibile = { display: showDetail ? '' : 'none' }
+
+  const handleBlogUpdate = async (newBlog) => {
+    try {
+      dispatch(updateBlogs({ newBlog }))
+    } catch (exceptions) {
+      console.log(exceptions)
+      dispatch(showNotification({ message: 'An er ror has occured in the errors', error: true }))
+    }
+  }
+
+  const handleBlogDelete = async (blog) => {
+    try {
+      if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
+        dispatch(deleteBlog({ id: blog.id }))
+      }
+    } catch (exceptions) {
+      console.log(exceptions)
+      dispatch(showNotification({ message: 'An error has occured in the errors', error: true }))
+    }
+  }
 
   return (
     <div className="blog" style={blogStyle}>
@@ -32,7 +56,7 @@ const Blog = ({ blog, updateBlog, deleteBlog, showDelete }) => {
           <button
             className="like-btn"
             onClick={() =>
-              updateBlog({ ...blog, user: blog.user.id, likes: blog.likes + 1 })
+              handleBlogUpdate({ ...blog, user: blog.user.id, likes: blog.likes + 1 })
             }
           >
             Like
@@ -42,7 +66,7 @@ const Blog = ({ blog, updateBlog, deleteBlog, showDelete }) => {
         {showDelete ? (
           <button
             className="remove-btn"
-            onClick={() => deleteBlog({ ...blog })}
+            onClick={() => handleBlogDelete({ ...blog })}
           >
             remove
           </button>
@@ -54,8 +78,6 @@ const Blog = ({ blog, updateBlog, deleteBlog, showDelete }) => {
 
 Blog.propTypes = {
   blog: PropTypes.object,
-  updateBlog: PropTypes.func.isRequired,
-  deleteBlog: PropTypes.func.isRequired,
   showDelete: PropTypes.bool.isRequired,
 }
 
