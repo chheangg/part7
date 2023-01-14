@@ -1,18 +1,17 @@
 import { useState, useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { initializeBlogs, setBlogs } from './reducers/blogReducer'
 import './styles/index.css'
 import Notification from './components/Notification'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import blogService from './services/blogs'
-import loginService from './services/login'
 import Togglable from './components/Togglable'
 
 import { showNotification } from './reducers/notificationReducer'
+import { initializeBlogs, setBlogs } from './reducers/blogReducer'
+import { setUser, initializeUser } from './reducers/userReducer'
 
 const App = () => {
-  const [user, setUser] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
@@ -21,7 +20,7 @@ const App = () => {
   useEffect(() => {
     const user = JSON.parse(window.localStorage.getItem('BlogLoggedinUser'))
     if (user) {
-      setUser(user)
+      dispatch(setUser(user))
       blogService.setToken(user.token)
     }
   }, [])
@@ -46,16 +45,12 @@ const App = () => {
   }, [])
 
   const blogs = useSelector(({ blogs }) => blogs)
+  const user = useSelector(({ user }) => user)
 
-  const handleLogin = async (event) => {
+  const handleLogin = (event) => {
     event.preventDefault()
     try {
-      const user = await loginService.login({ username, password })
-
-      // Set token in app and localStorage and clear out form
-      window.localStorage.setItem('BlogLoggedinUser', JSON.stringify(user))
-      blogService.setToken(user.token)
-      setUser(user)
+      dispatch(initializeUser({ username, password }))
       setUsername('')
       setPassword('')
     } catch (exceptions) {
@@ -67,7 +62,7 @@ const App = () => {
 
   const handleLogout = (event) => {
     event.preventDefault()
-    setUser(null)
+    dispatch(setUser(null))
     window.localStorage.removeItem('BlogLoggedinUser')
     blogService.setToken(null)
   }
