@@ -1,15 +1,19 @@
 import { useState, useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import './styles/index.css'
+
 import Notification from './components/Notification'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
+import UsersStat from './components/UsersStat'
+
 import blogService from './services/blogs'
 import Togglable from './components/Togglable'
 
 import { showNotification } from './reducers/notificationReducer'
 import { initializeBlogs, setBlogs } from './reducers/blogReducer'
 import { setUser, initializeUser } from './reducers/userReducer'
+import { Routes, Route } from 'react-router-dom'
 
 const App = () => {
   const [username, setUsername] = useState('')
@@ -116,14 +120,9 @@ const App = () => {
     }
   }
 
-  const blogForm = () => {
+  const BlogFormContainer = () => {
     return (
       <div>
-        <form onSubmit={handleLogout}>
-          <p>{user.name} logged in</p>
-          <button type="submit">logout</button>
-        </form>
-
         <h2>create new</h2>
         <Togglable buttonText="new blog" ref={blogFormRef}>
           <BlogForm addBlog={handleBlogSubmit} />
@@ -139,13 +138,29 @@ const App = () => {
     )
   }
 
+  if (!user) {
+    return (
+      <div>
+        <h2>blogs</h2>
+        <Notification />
+
+        {user === null && loginForm()}
+      </div>
+    )
+  }
+
   return (
     <div>
       <h2>blogs</h2>
       <Notification />
-
-      {user === null && loginForm()}
-      {user !== null && blogForm()}
+      <form onSubmit={handleLogout}>
+        <p>{user.name} logged in</p>
+        <button type="submit">logout</button>
+      </form>
+      <Routes>
+        <Route index element={<BlogFormContainer />} />
+        <Route path='/users' element={<UsersStat />} />
+      </Routes>
     </div>
   )
 }
