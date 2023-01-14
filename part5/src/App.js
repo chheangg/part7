@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { useDispatch } from 'react-redux'
 import './styles/index.css'
 import Notification from './components/Notification'
 import Blog from './components/Blog'
@@ -7,13 +8,15 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 import Togglable from './components/Togglable'
 
+import { showNotification } from './reducers/notificationReducer'
+
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
-  const [message, setMessage] = useState(null)
-  const [error, setError] = useState(false)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+
+  const dispatch = useDispatch()
 
   useEffect(() => {
     const user = JSON.parse(window.localStorage.getItem('BlogLoggedinUser'))
@@ -36,12 +39,6 @@ const App = () => {
     })
   }, [])
 
-  const showNotification = (message, error) => {
-    setMessage(message)
-    setError(error)
-    setTimeout(() => setMessage(null), 5000)
-  }
-
   const handleLogin = async (event) => {
     event.preventDefault()
     try {
@@ -56,7 +53,7 @@ const App = () => {
     } catch (exceptions) {
       console.log(exceptions)
       const error = 'wrong username or password'
-      showNotification(error, true)
+      dispatch(showNotification({ message: error, error: true }))
     }
   }
 
@@ -104,15 +101,15 @@ const App = () => {
     try {
       const addedBlog = await blogService.create(newBlog)
       setBlogs([...blogs, addedBlog])
-      showNotification(
-        `a new blog ${addedBlog.title} by ${addedBlog.author}`,
-        false
-      )
+      dispatch(showNotification({
+        message: `a new blog ${addedBlog.title} by ${addedBlog.author}`,
+        error: false
+      }))
       console.log(blogFormRef)
       blogFormRef.current.handleVisibility()
     } catch (exceptions) {
       console.log(exceptions)
-      showNotification('Incorrect title, author, or url', true)
+      dispatch(showNotification({ message: 'Incorrect title, author, or url', error: true }))
     }
   }
 
@@ -125,7 +122,7 @@ const App = () => {
       setBlogs(updatedBlogs)
     } catch (exceptions) {
       console.log(exceptions)
-      showNotification('An error has occured in the errors', true)
+      dispatch(showNotification({ message: 'An error has occured in the errors', error: true }))
     }
   }
 
@@ -138,7 +135,7 @@ const App = () => {
       }
     } catch (exceptions) {
       console.log(exceptions)
-      showNotification('An error has occured in the errors', true)
+      dispatch(showNotification({ message: 'An error has occured in the errors', error: true }))
     }
   }
 
@@ -170,7 +167,7 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
-      <Notification message={message} error={error} />
+      <Notification />
 
       {user === null && loginForm()}
       {user !== null && blogForm()}
