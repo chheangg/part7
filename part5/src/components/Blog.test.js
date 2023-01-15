@@ -4,7 +4,7 @@ import Blog from './Blog'
 import userEvent from '@testing-library/user-event'
 
 describe('<Blog />', () => {
-  test("render blog's title and author only", () => {
+  test('render blog\'s title and author only', () => {
     const blog = {
       title: 'A Game Of Thrones',
       author: 'George RR Martin',
@@ -39,7 +39,7 @@ describe('<Blog />', () => {
     expect(blogDetail).toHaveStyle('display: none')
   })
 
-  test("render blog's detail", async () => {
+  test('render blog\'s detail', async () => {
     const blog = {
       title: 'A Game Of Thrones',
       author: 'George RR Martin',

@@ -10,6 +10,7 @@ import UsersStat from './components/UsersStat'
 import blogService from './services/blogs'
 import Togglable from './components/Togglable'
 import UserDetail from './components/UserDetail'
+import BlogDetail from './components/BlogDetail'
 
 import { showNotification } from './reducers/notificationReducer'
 import { initializeBlogs, setBlogs } from './reducers/blogReducer'
@@ -132,7 +133,6 @@ const App = () => {
           <Blog
             key={blog.id}
             blog={blog}
-            showDelete={blog.user.username === user.username}
           />
         ))}
       </div>
@@ -162,6 +162,7 @@ const App = () => {
         <Route index element={<BlogFormContainer />} />
         <Route path='/users' element={<UsersStat />} />
         <Route path='/users/:userId' element={<UserDetail />} />
+        <Route path='/blogs/:blogId' element={<BlogDetail />} />
       </Routes>
     </div>
   )
