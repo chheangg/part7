@@ -65,6 +65,12 @@ const BlogDetail = () => {
           </button>
         ) : null}
       </div>
+      <div>
+        <h3>comments</h3>
+        <ul>
+          {blog.comments.map(comment => <li key={blog.comments.indexOf(comment)}>{comment.message}</li>)}
+        </ul>
+      </div>
     </div>
   )
 }
