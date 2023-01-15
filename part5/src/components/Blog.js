@@ -23,7 +23,6 @@ const Blog = ({ blog }) => {
 
 Blog.propTypes = {
   blog: PropTypes.object,
-  showDelete: PropTypes.bool.isRequired,
 }
 
 export default Blog

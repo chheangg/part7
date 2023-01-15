@@ -6,6 +6,7 @@ import Notification from './components/Notification'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import UsersStat from './components/UsersStat'
+import NavBar from './components/NavBar'
 
 import blogService from './services/blogs'
 import Togglable from './components/Togglable'
@@ -15,7 +16,7 @@ import BlogDetail from './components/BlogDetail'
 import { showNotification } from './reducers/notificationReducer'
 import { initializeBlogs, setBlogs } from './reducers/blogReducer'
 import { setUser, initializeUser } from './reducers/userReducer'
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Link } from 'react-router-dom'
 
 const App = () => {
   const [username, setUsername] = useState('')
@@ -152,12 +153,12 @@ const App = () => {
 
   return (
     <div>
+      <NavBar user={user} handleLogout={handleLogout}>
+        <Link to='/'>Blogs</Link>
+        <Link to='/users'>Users</Link>
+      </NavBar>
       <h2>blogs</h2>
       <Notification />
-      <form onSubmit={handleLogout}>
-        <p>{user.name} logged in</p>
-        <button type="submit">logout</button>
-      </form>
       <Routes>
         <Route index element={<BlogFormContainer />} />
         <Route path='/users' element={<UsersStat />} />
