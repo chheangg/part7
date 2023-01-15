@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import PropTypes from 'prop-types'
+import { Input, Button } from '@chakra-ui/react'
 
 const BlogForm = ({ addBlog }) => {
   const [title, setTitle] = useState('')
@@ -16,33 +17,42 @@ const BlogForm = ({ addBlog }) => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <label htmlFor="title">title:</label>
-      <input
+      <label htmlFor="title">Title:</label>
+      <Input
+        my='3'
+        variant='filled'
+        size='sm'
         id="title"
         type="text"
         value={title}
         onChange={({ target }) => setTitle(target.value)}
-      ></input>
+      ></Input>
       <br></br>
-      <label htmlFor="author">author:</label>
-      <input
+      <label htmlFor="author">Author:</label>
+      <Input
+        my='3'
+        variant='filled'
+        size='sm'
         id="author"
         type="text"
         value={author}
         onChange={({ target }) => setAuthor(target.value)}
-      ></input>
+      ></Input>
       <br></br>
-      <label htmlFor="url">url:</label>
-      <input
+      <label htmlFor="url">Url:</label>
+      <Input
+        my='3'
+        variant='filled'
+        size='sm'
         id="url"
         type="text"
         value={url}
         onChange={({ target }) => setUrl(target.value)}
-      ></input>
+      ></Input>
       <br></br>
-      <button id="create-blog" type="submit">
+      <Button size='md' colorScheme='cyan' color='white' my='2' id="create-blog" type="submit">
         create
-      </button>
+      </Button>
     </form>
   )
 }

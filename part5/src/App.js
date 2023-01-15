@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { Container, Heading, Divider, VStack } from '@chakra-ui/react'
 import './styles/index.css'
 
 import Notification from './components/Notification'
@@ -126,16 +127,19 @@ const App = () => {
   const BlogFormContainer = () => {
     return (
       <div>
-        <h2>create new</h2>
+        <Heading fontSize='2rem'>create new</Heading>
         <Togglable buttonText="new blog" ref={blogFormRef}>
           <BlogForm addBlog={handleBlogSubmit} />
         </Togglable>
-        {blogs.map((blog) => (
-          <Blog
-            key={blog.id}
-            blog={blog}
-          />
-        ))}
+        <Divider my='4' />
+        <VStack align='left' bgColor='gray.100' rounded='md' px='2' py='2'>
+          {blogs.map((blog) => (
+            <Blog
+              key={blog.id}
+              blog={blog}
+            />
+          ))}
+        </VStack>
       </div>
     )
   }
@@ -157,14 +161,17 @@ const App = () => {
         <Link to='/'>Blogs</Link>
         <Link to='/users'>Users</Link>
       </NavBar>
-      <h2>blogs</h2>
-      <Notification />
-      <Routes>
-        <Route index element={<BlogFormContainer />} />
-        <Route path='/users' element={<UsersStat />} />
-        <Route path='/users/:userId' element={<UserDetail />} />
-        <Route path='/blogs/:blogId' element={<BlogDetail />} />
-      </Routes>
+      <Container mt='8' maxW='100ch'>
+        <Heading fontSize='3rem'>Blogs</Heading>
+        <Divider my='4' />
+        <Notification />
+        <Routes>
+          <Route index element={<BlogFormContainer />} />
+          <Route path='/users' element={<UsersStat />} />
+          <Route path='/users/:userId' element={<UserDetail />} />
+          <Route path='/blogs/:blogId' element={<BlogDetail />} />
+        </Routes>
+      </Container>
     </div>
   )
 }
