@@ -9,6 +9,7 @@ import UsersStat from './components/UsersStat'
 
 import blogService from './services/blogs'
 import Togglable from './components/Togglable'
+import UserDetail from './components/UserDetail'
 
 import { showNotification } from './reducers/notificationReducer'
 import { initializeBlogs, setBlogs } from './reducers/blogReducer'
@@ -160,6 +161,7 @@ const App = () => {
       <Routes>
         <Route index element={<BlogFormContainer />} />
         <Route path='/users' element={<UsersStat />} />
+        <Route path='/users/:userId' element={<UserDetail />} />
       </Routes>
     </div>
   )
